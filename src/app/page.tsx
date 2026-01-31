@@ -39,10 +39,9 @@ export default function Home() {
           router.push('/create-profile')
           return;
         }
-      } catch (error) {
+      } catch {
         // Failed to fetch profile (likely 404 or network error)
         // Assume New User -> Redirect to Create Profile
-        console.log("No profile found or error, redirecting to create profile:", error)
         router.push('/create-profile')
         return;
       } finally {

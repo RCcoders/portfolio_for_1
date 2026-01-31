@@ -2,7 +2,6 @@ import type { Metadata } from 'next'
 import { Inter, Space_Grotesk } from 'next/font/google'
 import './globals.css'
 import Navbar from '@/components/Navbar'
-import Link from 'next/link'
 import AnimatedBackground from '@/components/ui/AnimatedBackground'
 import SplashScreen from '@/components/SplashScreen'
 import Footer from '@/components/Footer'
@@ -35,7 +34,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: 'website',
     locale: 'en_US',
-    url: 'https://raghavchawla.dev',
+    url: process.env.NEXT_PUBLIC_SITE_URL || 'https://raghavchawla.dev',
     title: portfolioData.seo.title,
     description: portfolioData.seo.description,
     siteName: `${portfolioData.personal.name} Portfolio`,
@@ -61,7 +60,7 @@ export const metadata: Metadata = {
     apple: '/apple-touch-icon.png',
   },
   manifest: '/site.webmanifest',
-  metadataBase: new URL('https://raghavchawla.dev'),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://raghavchawla.dev'),
 }
 
 export default function RootLayout({

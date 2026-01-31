@@ -27,7 +27,7 @@ function Word({ children, ...props }: { children: React.ReactNode } & React.Comp
     });
 
     return (
-        <Text ref={ref} onPointerOver={over} onPointerOut={out} onClick={() => console.log('clicked')} {...props} {...fontProps}>
+        <Text ref={ref} onPointerOver={over} onPointerOut={out} {...props} {...fontProps}>
             {children}
         </Text>
     );

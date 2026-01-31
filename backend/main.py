@@ -6,22 +6,24 @@ import os
 
 app = FastAPI()
 
-# CORS configuration
-# Get production domain from environment variable or use default
+# CORS configuration: explicit origins only (no wildcard in production)
 VERCEL_URL = os.getenv("VERCEL_URL", "")
-production_origin = f"https://{VERCEL_URL}" if VERCEL_URL else "https://*.vercel.app"
-
+CORS_ORIGINS = os.getenv("CORS_ORIGINS", "")  # Optional: comma-separated list for custom domains
 origins = [
     "http://localhost:3000",
     "http://127.0.0.1:3000",
-    production_origin,
 ]
+if VERCEL_URL:
+    origins.append(f"https://{VERCEL_URL}")
+    origins.append(f"https://www.{VERCEL_URL}")
+if CORS_ORIGINS:
+    origins.extend(o.strip() for o in CORS_ORIGINS.split(",") if o.strip())
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"] if VERCEL_URL else origins,  # Allow all in production, specific in dev
+    allow_origins=origins,
     allow_credentials=True,
-    allow_methods=["*"],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allow_headers=["*"],
 )
 

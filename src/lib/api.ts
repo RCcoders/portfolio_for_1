@@ -1,5 +1,4 @@
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api';
-console.log('Using API URL:', API_URL);
 
 export interface Project {
     id?: string;
@@ -169,7 +168,6 @@ export const api = {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ email, password })
         });
-        if (!response.ok) return false;
         if (!response.ok) return false;
         return true;
     },

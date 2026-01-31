@@ -1,7 +1,7 @@
 'use client'
 import Link from 'next/link'
 import Image from 'next/image'
-import { ChevronRight, Github, Linkedin, Mail, ArrowDown, ShoppingCart, DollarSign, TrendingUp, Instagram } from 'lucide-react'
+import { ChevronRight, Github, Linkedin, Mail, ArrowDown, TrendingUp, Instagram } from 'lucide-react'
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import PageTransition from '@/components/ui/PageTransition'
@@ -34,13 +34,6 @@ export default function PortfolioContent({ profile }: PortfolioContentProps) {
     // fallback to portfolioData if no profile passed (shouldn't happen with new logic but good for safety)
     const displayProfile = profile || portfolioData.personal;
     const fullText = displayProfile.name
-
-    // Icon mapping for dynamic rendering
-    const IconMap: Record<string, React.ComponentType<{ className?: string }>> = {
-        ShoppingCart: ShoppingCart,
-        DollarSign: DollarSign,
-        TrendingUp: TrendingUp
-    }
 
     useEffect(() => {
         if (!fullText) return;
@@ -147,9 +140,9 @@ export default function PortfolioContent({ profile }: PortfolioContentProps) {
                         className="flex gap-6 mb-8 pointer-events-auto"
                     >
                         {[
-                            { icon: Github, href: displayProfile.github || portfolioData.social.github, label: 'GitHub' },
-                            { icon: Linkedin, href: displayProfile.linkedin || portfolioData.social.linkedin, label: 'LinkedIn' },
-                            { icon: Instagram, href: displayProfile.instagram || portfolioData.social.instagram, label: 'Instagram' },
+                            { icon: Github, href: (profile?.github ?? portfolioData.social.github) || '#', label: 'GitHub' },
+                            { icon: Linkedin, href: (profile?.linkedin ?? portfolioData.social.linkedin) || '#', label: 'LinkedIn' },
+                            { icon: Instagram, href: (profile?.instagram ?? portfolioData.social.instagram) || '#', label: 'Instagram' },
                             { icon: Mail, href: `mailto:${displayProfile.email}`, label: 'Email' }
                         ].map((social, index) => (
                             <a
@@ -191,8 +184,7 @@ export default function PortfolioContent({ profile }: PortfolioContentProps) {
 
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                             {featuredProjects.map((project: Project, index: number) => {
-                                // const Icon = project.iconName ? IconMap[project.iconName] : null; // Dynamic icons not supported in DB yet without mapping
-                                const Icon = null;
+                                const ProjectIcon = TrendingUp;
 
                                 return (
                                     <motion.div
@@ -217,7 +209,7 @@ export default function PortfolioContent({ profile }: PortfolioContentProps) {
                                                     <div className="w-full h-full flex items-center justify-center bg-black/40 backdrop-blur-sm">
                                                         <div className="text-center p-6">
                                                             <div className="w-20 h-20 bg-white/5 rounded-2xl flex items-center justify-center mb-4 mx-auto border border-white/10 shadow-[0_0_15px_rgba(56,189,248,0.2)]">
-                                                                {Icon && <Icon className="w-8 h-8 text-sky-400" />}
+                                                                <ProjectIcon className="w-8 h-8 text-sky-400" />
                                                             </div>
                                                             <span className="text-white/60 text-sm font-medium tracking-wider uppercase">{project.title}</span>
                                                         </div>

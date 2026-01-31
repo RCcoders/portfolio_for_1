@@ -34,14 +34,16 @@ In the Vercel project settings, add the following environment variables:
 
 | Variable | Value | Description |
 |----------|-------|-------------|
-| `SUPABASE_URL` | `https://your-project.supabase.co` | Your Supabase project URL |
-| `SUPABASE_KEY` | `your-supabase-anon-key` | Your Supabase anon/public key |
+| `SUPABASE_URL` | `https://your-project.supabase.co` | Your Supabase project URL (required in production) |
+| `SUPABASE_KEY` | `your-supabase-anon-key` | Your Supabase anon/public key (required in production) |
+| `CORS_ORIGINS` | `https://your-domain.com` | Optional: comma-separated list of allowed origins (custom domain) |
 
 ### Frontend Environment Variables
 
 | Variable | Value | Description |
 |----------|-------|-------------|
-| `NEXT_PUBLIC_API_URL` | `/api` | API endpoint (relative path) |
+| `NEXT_PUBLIC_API_URL` | `/api` | API endpoint (relative path for production) |
+| `NEXT_PUBLIC_SITE_URL` | `https://your-domain.com` | Canonical site URL for metadata, Open Graph, sitemap (no trailing slash) |
 
 **How to add environment variables:**
 1. In your Vercel project dashboard, go to **Settings** → **Environment Variables**
@@ -124,6 +126,17 @@ To add a custom domain:
 1. Go to your Vercel project → **Settings** → **Domains**
 2. Add your custom domain
 3. Follow Vercel's instructions to configure DNS
+
+## Production Checklist
+
+Before going live, ensure:
+
+- [ ] All environment variables are set in Vercel (Production + Preview)
+- [ ] `NEXT_PUBLIC_SITE_URL` matches your live domain (for SEO and Open Graph)
+- [ ] `CORS_ORIGINS` includes your custom domain if you use one
+- [ ] Run `npm run build` locally to catch TypeScript/build errors
+- [ ] Test API health at `https://your-domain.com/api` after deploy
+- [ ] Verify `/robots.txt` and `/sitemap.xml` resolve correctly
 
 ## Security Notes
 

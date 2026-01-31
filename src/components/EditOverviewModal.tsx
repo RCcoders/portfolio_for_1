@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { X } from 'lucide-react';
-import { api } from '@/lib/api';
+import { api, type Profile } from '@/lib/api';
 
 interface EditOverviewModalProps {
     isOpen: boolean;
@@ -8,7 +8,7 @@ interface EditOverviewModalProps {
     onSave: (text: string) => void;
     currentText: string;
     profileId: string;
-    profileData: any; // Using any to simplify passing full profile for update
+    profileData: Partial<Profile>;
 }
 
 export default function EditOverviewModal({ isOpen, onClose, onSave, currentText, profileId, profileData }: EditOverviewModalProps) {
