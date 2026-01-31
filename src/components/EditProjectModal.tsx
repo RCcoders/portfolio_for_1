@@ -111,7 +111,7 @@ export default function EditProjectModal({ isOpen, onClose, onProjectUpdated, pr
                                 type="text"
                                 required
                                 className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white focus:ring-2 focus:ring-sky-500 outline-none"
-                                value={formData.title}
+                                value={formData.title || ''}
                                 onChange={e => setFormData({ ...formData, title: e.target.value })}
                             />
                         </div>
@@ -119,7 +119,7 @@ export default function EditProjectModal({ isOpen, onClose, onProjectUpdated, pr
                             <label className="block text-sm font-medium text-gray-300 mb-1">Category</label>
                             <select
                                 className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white focus:ring-2 focus:ring-sky-500 outline-none"
-                                value={formData.category}
+                                value={formData.category || 'web-development'}
                                 onChange={e => setFormData({ ...formData, category: e.target.value })}
                             >
                                 <option value="web-development">Web Development</option>
@@ -135,7 +135,7 @@ export default function EditProjectModal({ isOpen, onClose, onProjectUpdated, pr
                             required
                             rows={3}
                             className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white focus:ring-2 focus:ring-blue-500 outline-none"
-                            value={formData.description}
+                            value={formData.description || ''}
                             onChange={e => setFormData({ ...formData, description: e.target.value })}
                         />
                     </div>
@@ -146,7 +146,7 @@ export default function EditProjectModal({ isOpen, onClose, onProjectUpdated, pr
                             <input
                                 type="text"
                                 className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white focus:ring-2 focus:ring-sky-500 outline-none"
-                                value={formData.image}
+                                value={formData.image || ''}
                                 onChange={e => setFormData({ ...formData, image: e.target.value })}
                             />
                         </div>
@@ -154,7 +154,7 @@ export default function EditProjectModal({ isOpen, onClose, onProjectUpdated, pr
                             <label className="block text-sm font-medium text-gray-300 mb-1">Status</label>
                             <select
                                 className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white focus:ring-2 focus:ring-sky-500 outline-none"
-                                value={formData.status}
+                                value={formData.status || 'planned'}
                                 onChange={e => setFormData({ ...formData, status: e.target.value as Project['status'] })}
                             >
                                 <option value="planned">Planned</option>
@@ -170,7 +170,7 @@ export default function EditProjectModal({ isOpen, onClose, onProjectUpdated, pr
                             <input
                                 type="text"
                                 className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white focus:ring-2 focus:ring-sky-500 outline-none"
-                                value={formData.githubUrl}
+                                value={formData.githubUrl || ''}
                                 onChange={e => setFormData({ ...formData, githubUrl: e.target.value })}
                             />
                         </div>
@@ -179,7 +179,7 @@ export default function EditProjectModal({ isOpen, onClose, onProjectUpdated, pr
                             <input
                                 type="text"
                                 className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white focus:ring-2 focus:ring-sky-500 outline-none"
-                                value={formData.liveUrl}
+                                value={formData.liveUrl || ''}
                                 onChange={e => setFormData({ ...formData, liveUrl: e.target.value })}
                             />
                         </div>

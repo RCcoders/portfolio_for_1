@@ -21,7 +21,7 @@ import {
   Edit2,
   Upload
 } from 'lucide-react';
-import { api, Project } from '@/lib/api';
+import { api, Project, Profile } from '@/lib/api';
 import AddProjectModal from '@/components/AddProjectModal';
 import EditProjectModal from '@/components/EditProjectModal';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -38,6 +38,7 @@ interface Category {
 
 export default function ProjectsPage() {
   const [projects, setProjects] = useState<Project[]>([]);
+  const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
   const [activeFilter, setActiveFilter] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
@@ -46,17 +47,38 @@ export default function ProjectsPage() {
   const [editingProject, setEditingProject] = useState<Project | null>(null);
 
   useEffect(() => {
-    fetchProjects();
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        const userProfile = await api.getProfile();
+        setProfile(userProfile);
+        if (userProfile?.id) {
+          const data = await api.getProjects(userProfile.id);
+          setProjects(data);
+        } else {
+          // Fallback or empty if no profile found
+          setProjects([]);
+        }
+      } catch (error) {
+        console.error('Failed to fetch data:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
   }, []);
 
   const fetchProjects = async () => {
+    // Re-fetch helper if needed, but main load is above
+    // Ideally refactor this to reuse the logic
     try {
-      const data = await api.getProjects();
-      setProjects(data);
+      const profile = await api.getProfile();
+      if (profile?.id) {
+        const data = await api.getProjects(profile.id);
+        setProjects(data);
+      }
     } catch (error) {
       console.error('Failed to fetch projects:', error);
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -183,6 +205,7 @@ export default function ProjectsPage() {
             className="object-cover transition-transform duration-700 group-hover:scale-110"
             sizes="(max-width: 768px) 100vw, 600px"
             priority
+            onError={() => setProjectImage('https://via.placeholder.com/600x400?text=Project+Image')}
           />
           <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/40 to-transparent opacity-80 group-hover:opacity-60 transition-opacity duration-300"></div>
 
@@ -393,6 +416,7 @@ export default function ProjectsPage() {
           isOpen={isAddModalOpen}
           onClose={() => setIsAddModalOpen(false)}
           onProjectAdded={handleAddProject}
+          profileId={profile?.id}
         />
 
         {editingProject && (

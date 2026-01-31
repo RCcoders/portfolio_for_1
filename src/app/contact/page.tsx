@@ -29,13 +29,15 @@ import PageTransition from '@/components/ui/PageTransition';
 import GlowCard from '@/components/ui/GlowCard';
 
 // AI Chatbot Component
-function AIChatbot() {
+import { api, Profile } from '@/lib/api'; // Ensure Profile and api are imported
+
+function AIChatbot({ profile }: { profile: Profile | null }) {
   const [isOpen, setIsOpen] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
   const [messages, setMessages] = useState([
     {
       type: 'bot',
-      content: "Hi! I'm Raghav's AI assistant. I can help you learn more about his services, experience, or answer any questions about potential projects. How can I help you today?",
+      content: `Hi! I'm ${profile?.name?.split(' ')[0] || 'Raghav'}'s AI assistant. I can help you learn more about his services, experience, or answer any questions about potential projects. How can I help you today?`,
       timestamp: new Date()
     }
   ]);
@@ -43,6 +45,17 @@ function AIChatbot() {
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+
+  // Update initial message when profile loads
+  useEffect(() => {
+    if (profile?.name && messages.length === 1 && messages[0].type === 'bot') {
+      setMessages([{
+        type: 'bot',
+        content: `Hi! I'm ${profile.name.split(' ')[0]}'s AI assistant. I can help you learn more about services, experience, or answer any questions. How can I help you today?`,
+        timestamp: new Date()
+      }]);
+    }
+  }, [profile]);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -64,34 +77,37 @@ function AIChatbot() {
     await new Promise(resolve => setTimeout(resolve, 1000 + Math.random() * 1000));
 
     const lowerMessage = userMessage.toLowerCase();
+    const name = profile?.name || 'Raghav';
+    const email = profile?.email || 'chawlaraghav78@gmail.com';
+    const phone = profile?.mobile_number || '+91 998121 79058';
 
     // Simple keyword-based responses - replace with actual AI API
     if (lowerMessage.includes('service') || lowerMessage.includes('what do') || lowerMessage.includes('offer')) {
-      return "Raghav specializes in Data Science, Machine Learning, AI solutions, and Full-Stack Web Development. His main services include:\n\n• Custom ML models and AI solutions\n• Data analysis and visualization\n• Web applications (React, Node.js, Python)\n• Automation scripts and tools\n• Cloud deployment (AWS, Vercel)\n• Technical consulting\n\nWhich area interests you most?";
+      return `${name} specializes in Data Science, Machine Learning, AI solutions, and Full-Stack Web Development. Services include:\n\n• Custom ML models and AI solutions\n• Data analysis and visualization\n• Web applications (React, Node.js, Python)\n• Automation scripts and tools\n• Cloud deployment (AWS, Vercel)\n• Technical consulting\n\nWhich area interests you most?`;
     }
 
     if (lowerMessage.includes('experience') || lowerMessage.includes('background')) {
-      return "Raghav is a skilled developer with expertise in:\n\n• Python, JavaScript, React, Node.js\n• Machine Learning frameworks (TensorFlow, PyTorch, Scikit-learn)\n• Data Science tools (Pandas, NumPy, Matplotlib)\n• Cloud platforms and deployment\n• Database management\n\nHe has worked on various projects ranging from predictive models to full-stack web applications. Would you like to know about any specific technology or project type?";
+      return `${name} is a skilled developer with expertise in:\n\n• Python, JavaScript, React, Node.js\n• Machine Learning frameworks (TensorFlow, PyTorch, Scikit-learn)\n• Data Science tools (Pandas, NumPy, Matplotlib)\n• Cloud platforms and deployment\n• Database management\n\nWould you like to know about any specific technology or project type?`;
     }
 
     if (lowerMessage.includes('price') || lowerMessage.includes('cost') || lowerMessage.includes('rate')) {
-      return "Project pricing depends on several factors like complexity, timeline, and requirements. Raghav offers competitive rates and can provide:\n\n• Hourly consulting rates\n• Fixed-price project quotes\n• Retainer agreements for ongoing work\n\nFor an accurate quote, it's best to discuss your specific project requirements. Would you like me to help you prepare details for a project inquiry?";
+      return `Project pricing depends on complexity and requirements. ${name} offers competitive rates and can provide:\n\n• Hourly consulting rates\n• Fixed-price project quotes\n• Retainer agreements\n\nFor an accurate quote, please discuss your specific project requirements.`;
     }
 
     if (lowerMessage.includes('timeline') || lowerMessage.includes('how long') || lowerMessage.includes('duration')) {
-      return "Project timelines vary based on scope and complexity:\n\n• Simple automation scripts: 1-3 days\n• Data analysis projects: 1-2 weeks\n• ML model development: 2-4 weeks\n• Web applications: 2-6 weeks\n• Complex AI solutions: 4-8 weeks\n\nRaghav always provides realistic timelines during project planning. What type of project are you considering?";
+      return `${name} provides realistic timelines. General estimates:\n\n• Simple automation scripts: 1-3 days\n• Data analysis projects: 1-2 weeks\n• ML model development: 2-4 weeks\n• Web applications: 2-6 weeks\n\nWhat type of project are you considering?`;
     }
 
     if (lowerMessage.includes('contact') || lowerMessage.includes('reach') || lowerMessage.includes('get in touch')) {
-      return "You can reach Raghav through several channels:\n\n📧 Email: chawlaraghav78@gmail.com\n📱 Phone: +91 998121 79058\n💼 LinkedIn: https://www.linkedin.com/in/raghav-chawla-29255b275/\n💻 GitHub: https://github.com/RCcoders\n\nHe typically responds to emails within 24 hours on weekdays. For urgent matters, calling directly is recommended!";
+      return `You can reach ${name} through:\n\n📧 Email: ${email}\n📱 Phone: ${phone}\n\nHe typically responds to emails within 24 hours on weekdays.`;
     }
 
     if (lowerMessage.includes('hello') || lowerMessage.includes('hi') || lowerMessage.includes('hey')) {
-      return "Hello! Great to meet you! I'm here to help you learn more about Raghav's services and expertise. Whether you're interested in:\n\n• Data Science & Machine Learning\n• Web Development\n• AI Solutions\n• Technical Consulting\n\nFeel free to ask me anything! What would you like to know?";
+      return `Hello! Great to meet you! I'm here to help you learn more about ${name}'s services. Feel free to ask anything!`;
     }
 
     // Default response
-    return "That's a great question! While I can provide general information about Raghav's services, I'd recommend reaching out to him directly for detailed discussions about your specific needs.\n\nYou can:\n• Fill out the contact form on this page\n• Email him at chawlaraghav78@gmail.com\n• Call him at +91 998121 79058\n\nIs there anything specific about his services or experience you'd like to know more about?";
+    return `That's a great question! I recommend reaching out to ${name} directly for detailed discussions.\n\nYou can:\n• Fill out the contact form on this page\n• Email at ${email}\n• Call at ${phone}\n\nIs there anything specific you'd like to know more about?`;
   };
 
   const handleSendMessage = async () => {
@@ -126,7 +142,7 @@ function AIChatbot() {
     } catch {
       const errorMessage = {
         type: 'bot',
-        content: "I apologize, but I'm having trouble responding right now. Please try reaching out to Raghav directly via email or phone for immediate assistance.",
+        content: "I apologize, but I'm having trouble responding right now. Please try reaching out directly via email or phone.",
         timestamp: new Date()
       };
       setMessages(prev => [...prev, errorMessage]);
@@ -278,6 +294,7 @@ function AIChatbot() {
 
 export default function ContactPage() {
   const form = useRef<HTMLFormElement>(null);
+  const [profile, setProfile] = useState<Profile | null>(null);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -289,6 +306,19 @@ export default function ContactPage() {
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<'success' | 'error' | null>(null);
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        // Fetch the main profile (assuming single user or logic in getProfile)
+        const data = await api.getProfile();
+        setProfile(data);
+      } catch (error) {
+        console.error("Failed to fetch profile", error);
+      }
+    };
+    fetchProfile();
+  }, []);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -334,23 +364,23 @@ export default function ContactPage() {
     {
       icon: Mail,
       title: 'Email',
-      value: 'chawlaraghav78@gmail.com',
+      value: profile?.email || 'Loading...',
       description: 'Send me an email anytime',
-      link: 'mailto:chawlaraghav78@gmail.com',
+      link: `mailto:${profile?.email || ''}`,
       color: 'text-blue-400'
     },
     {
       icon: Phone,
       title: 'Phone',
-      value: '+91 998121 79058',
+      value: profile?.mobile_number || 'Loading...',
       description: 'Mon-Fri from 9am to 6pm',
-      link: 'tel:+919812179058',
+      link: `tel:${profile?.mobile_number?.replace(/\s/g, '') || ''}`,
       color: 'text-green-400'
     },
     {
       icon: MapPin,
       title: 'Location',
-      value: 'Panipat, Haryana',
+      value: profile?.location || 'Loading...',
       description: 'India',
       link: '#',
       color: 'text-sky-400'
@@ -369,29 +399,29 @@ export default function ContactPage() {
     {
       icon: Github,
       name: 'GitHub',
-      username: '@RCcoders',
-      link: 'https://github.com/RCcoders',
+      username: profile?.github ? '@' + profile.github.split('/').pop() : 'Loading...',
+      link: profile?.github || '#',
       color: 'hover:text-gray-400'
     },
     {
       icon: Linkedin,
       name: 'LinkedIn',
-      username: 'Raghav Chawla',
-      link: 'https://www.linkedin.com/in/raghav-chawla-29255b275/',
+      username: profile?.name || 'Loading...',
+      link: profile?.linkedin || '#',
       color: 'hover:text-blue-400'
     },
     {
       icon: Instagram,
       name: 'Instagram',
-      username: '_nx.raghav._',
-      link: 'https://instagram.com/_nx.raghav._',
+      username: profile?.instagram ? '@' + profile.instagram.split('/').pop() : 'Loading...',
+      link: profile?.instagram || '#',
       color: 'hover:text-green-500'
     },
     {
       icon: Globe,
-      name: 'Website',
-      username: 'raghavchawla.dev',
-      link: '#',
+      name: 'Twitter/X',
+      username: profile?.twitter ? '@' + profile.twitter.split('/').pop() : 'Loading...',
+      link: profile?.twitter || '#',
       color: 'hover:text-sky-400'
     }
   ];
@@ -770,7 +800,7 @@ export default function ContactPage() {
         </div>
 
         {/* AI Chatbot Component */}
-        <AIChatbot />
+        <AIChatbot profile={profile} />
       </div>
     </PageTransition>
   );

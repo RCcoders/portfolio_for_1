@@ -6,9 +6,10 @@ interface AddCertificateModalProps {
     isOpen: boolean;
     onClose: () => void;
     onCertificateAdded: (certificate: Certificate) => void;
+    profileId?: string;
 }
 
-export default function AddCertificateModal({ isOpen, onClose, onCertificateAdded }: AddCertificateModalProps) {
+export default function AddCertificateModal({ isOpen, onClose, onCertificateAdded, profileId }: AddCertificateModalProps) {
     const [loading, setLoading] = useState(false);
     const [formData, setFormData] = useState<Partial<Certificate>>({
         title: '',
@@ -38,7 +39,8 @@ export default function AddCertificateModal({ isOpen, onClose, onCertificateAdde
                 skills: formData.skills || [],
                 duration: formData.duration,
                 level: formData.level,
-                modules: formData.modules || []
+                modules: formData.modules || [],
+                profile_id: profileId
             };
 
             const created = await api.createCertificate(newCertificate);

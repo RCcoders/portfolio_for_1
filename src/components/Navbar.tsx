@@ -4,10 +4,12 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { Menu, X, Github, Linkedin, Mail, FileText } from 'lucide-react'
-
+import { api } from '@/lib/api'
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const [profileName, setProfileName] = useState('Raghav Chawla') // Default fallback
   const pathname = usePathname()
 
   useEffect(() => {
@@ -43,6 +45,35 @@ export default function Navbar() {
     return false
   }
 
+  useEffect(() => {
+    // Check login status and fetch profile
+    const checkLogin = async () => {
+      const loggedIn = localStorage.getItem('isLoggedIn') === 'true'
+      setIsLoggedIn(loggedIn)
+
+      if (loggedIn) {
+        try {
+          const profile = await api.getProfile()
+          if (profile?.name) {
+            setProfileName(profile.name)
+          }
+        } catch (error) {
+          console.error('Failed to fetch profile name', error)
+        }
+      }
+    }
+    checkLogin()
+
+    window.addEventListener('storage', checkLogin)
+    return () => window.removeEventListener('storage', checkLogin)
+  }, [pathname])
+
+  const handleLogout = () => {
+    localStorage.removeItem('isLoggedIn')
+    setIsLoggedIn(false)
+    window.location.href = '/login'
+  }
+
   return (
     <>
       <nav
@@ -63,7 +94,7 @@ export default function Navbar() {
                   </div>
                 </div>
                 <span className="font-bold text-xl tracking-tight text-white hidden sm:block group-hover:text-primary transition-colors">
-                  Raghav Chawla
+                  {profileName}
                 </span>
               </div>
             </Link>
@@ -84,7 +115,7 @@ export default function Navbar() {
               ))}
             </div>
 
-            {/* Desktop Social Links */}
+            {/* Desktop Social Links & Logout */}
             <div className="hidden lg:flex items-center space-x-3">
               {socialLinks.map((social) => (
                 <a
@@ -98,6 +129,15 @@ export default function Navbar() {
                   <social.icon className="w-5 h-5" />
                 </a>
               ))}
+
+              {isLoggedIn && (
+                <button
+                  onClick={handleLogout}
+                  className="ml-4 px-4 py-2 bg-red-500/10 text-red-400 border border-red-500/20 rounded-full text-sm font-medium hover:bg-red-500/20 hover:text-red-300 transition-all duration-300 hover:shadow-[0_0_15px_rgba(239,68,68,0.3)]"
+                >
+                  Logout
+                </button>
+              )}
             </div>
 
             {/* Mobile menu button */}
@@ -131,6 +171,15 @@ export default function Navbar() {
                   {item.name}
                 </Link>
               ))}
+
+              {isLoggedIn && (
+                <button
+                  onClick={handleLogout}
+                  className="w-full text-left px-4 py-4 rounded-xl text-lg font-medium text-red-400 hover:bg-red-500/10 transition-all duration-300"
+                >
+                  Logout
+                </button>
+              )}
 
               {/* Mobile Social Links */}
               <div className="flex items-center justify-center space-x-6 pt-8 mt-8 border-t border-white/10">

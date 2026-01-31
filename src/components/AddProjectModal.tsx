@@ -7,9 +7,10 @@ interface AddProjectModalProps {
     isOpen: boolean;
     onClose: () => void;
     onProjectAdded: (project: Project) => void;
+    profileId?: string;
 }
 
-export default function AddProjectModal({ isOpen, onClose, onProjectAdded }: AddProjectModalProps) {
+export default function AddProjectModal({ isOpen, onClose, onProjectAdded, profileId }: AddProjectModalProps) {
     const [loading, setLoading] = useState(false);
     const [formData, setFormData] = useState<Partial<Project>>({
         title: '',
@@ -45,7 +46,8 @@ export default function AddProjectModal({ isOpen, onClose, onProjectAdded }: Add
                 longDescription: formData.longDescription,
                 technologies: formData.technologies || {},
                 metrics: formData.metrics || {},
-                features: formData.features || []
+                features: formData.features || [],
+                profile_id: profileId
             };
 
             const created = await api.createProject(newProject);

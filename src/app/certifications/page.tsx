@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import CertCard from '@/components/CertCard';
-import { api, Certificate } from '@/lib/api';
+import { api, Certificate, Profile } from '@/lib/api';
 import AddCertificateModal from '@/components/AddCertificateModal';
 import EditCertificateModal from '@/components/EditCertificateModal';
 import { Plus, Trash2, Edit2, Upload } from 'lucide-react';
@@ -119,25 +119,44 @@ function CertificationCard({ cert, index, onEdit, onDelete }: CertificationCardP
 }
 
 // Main Certifications Page Component
+// ... imports
 export default function CertificationsPage() {
   const [certifications, setCertifications] = useState<Certificate[]>([]);
+  const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [editingCertificate, setEditingCertificate] = useState<Certificate | null>(null);
 
   useEffect(() => {
-    fetchCertifications();
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        const userProfile = await api.getProfile();
+        setProfile(userProfile);
+        if (userProfile?.id) {
+          const data = await api.getCertificates(userProfile.id);
+          setCertifications(data);
+        } else {
+          setCertifications([]);
+        }
+      } catch (error) {
+        console.error('Failed to fetch data:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
   }, []);
 
   const fetchCertifications = async () => {
     try {
-      const data = await api.getCertificates();
-      setCertifications(data);
+      if (profile?.id) {
+        const data = await api.getCertificates(profile.id);
+        setCertifications(data);
+      }
     } catch (error) {
       console.error('Failed to fetch certificates:', error);
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -182,6 +201,7 @@ export default function CertificationsPage() {
           isOpen={isAddModalOpen}
           onClose={() => setIsAddModalOpen(false)}
           onCertificateAdded={handleAddCertificate}
+          profileId={profile?.id}
         />
 
         {editingCertificate && (
