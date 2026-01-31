@@ -2,20 +2,24 @@ from fastapi import FastAPI, HTTPException, APIRouter
 from typing import List
 from fastapi.middleware.cors import CORSMiddleware
 from . import crud, schemas, database
+import os
 
 app = FastAPI()
 
 # CORS configuration
+# Get production domain from environment variable or use default
+VERCEL_URL = os.getenv("VERCEL_URL", "")
+production_origin = f"https://{VERCEL_URL}" if VERCEL_URL else "https://*.vercel.app"
+
 origins = [
     "http://localhost:3000",
     "http://127.0.0.1:3000",
-    "https://portfolio-website-rccoders.vercel.app", # Add generic Vercel domain or specific one if known
-    "*" # Allow all for now to avoid CORS issues on deployment
+    production_origin,
 ]
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=["*"] if VERCEL_URL else origins,  # Allow all in production, specific in dev
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

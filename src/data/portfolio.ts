@@ -1,4 +1,4 @@
-import { Github, Linkedin, Mail, Instagram, ShoppingCart, DollarSign, TrendingUp } from 'lucide-react';
+// Icon imports removed - icons are referenced by string names and mapped in components
 
 export interface PortfolioConfig {
   personal: {

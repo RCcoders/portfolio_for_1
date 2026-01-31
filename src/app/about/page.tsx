@@ -1,10 +1,8 @@
 'use client';
-import { useRouter } from 'next/navigation';
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import {
   Award,
-  BookOpen,
   MapPin,
   Mail,
   Edit,
@@ -17,7 +15,6 @@ import {
   Github,
   Linkedin,
   Zap,
-  Cpu,
   Upload // Added Upload icon
 } from 'lucide-react';
 import {
@@ -45,7 +42,7 @@ import EditOverviewModal from '@/components/EditOverviewModal';
 import EditProfileAssetsModal from '@/components/EditProfileAssetsModal';
 
 // Map icon names to components
-const IconMap: { [key: string]: any } = {
+const IconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   // Lucide defaults
   Globe, Award, Heart,
 
@@ -70,7 +67,6 @@ const IconMap: { [key: string]: any } = {
 };
 
 export default function AboutPage() {
-  const router = useRouter();
   const [activeTab, setActiveTab] = useState('overview');
   const [profile, setProfile] = useState<Profile | null>(null);
   const [experiences, setExperiences] = useState<Experience[]>([]);

@@ -36,7 +36,7 @@ export default function PortfolioContent({ profile }: PortfolioContentProps) {
     const fullText = displayProfile.name
 
     // Icon mapping for dynamic rendering
-    const IconMap: any = {
+    const IconMap: Record<string, React.ComponentType<{ className?: string }>> = {
         ShoppingCart: ShoppingCart,
         DollarSign: DollarSign,
         TrendingUp: TrendingUp
@@ -231,7 +231,7 @@ export default function PortfolioContent({ profile }: PortfolioContentProps) {
                                                 <p className="text-gray-400 text-sm mb-6 leading-relaxed flex-1">{project.description}</p>
 
                                                 <div className="flex gap-2 flex-wrap mt-auto">
-                                                    {project.tags.map((tag: any, idx: any) => (
+                                                    {project.tags.map((tag: string, idx: number) => (
                                                         <span
                                                             key={idx}
                                                             className="px-3 py-1 bg-sky-500/10 text-sky-300 text-xs font-medium rounded-full border border-sky-500/20"
